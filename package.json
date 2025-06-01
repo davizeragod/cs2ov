@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "globaloffensive": "^3.2.0",
+    "steam-session": "^1.9.3",
+    "steam-user": "^5.2.3"
+  }
+}
