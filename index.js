@@ -1,4 +1,5 @@
 const SteamUser = require('steam-user');
+const SteamID = require('steamid')
 const GlobalOffensive = require('globaloffensive');
 const express = require('express');
 const app = express();
@@ -6,7 +7,7 @@ app.use(express.json());
 require('dotenv').config();
 
 const PORT = 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log("Server Listening on PORT:", PORT);
 });
 
@@ -52,15 +53,19 @@ app.get('/status/:steamid', (request, response) => {
 
     function getRanks(uId) {
         if (amigos[uId] == SteamUser.EFriendRelationship.Friend) {
+            let sid = new SteamID(uId)
             csgo.requestPlayersProfile(uId, async (perfil) => {
+                console.log(perfil);
                 if (perfil && perfil.rankings && perfil.rankings[1]) {
                     objProfiles[perfil.account_id] = {
                         "PremierRating": perfil.rankings[1].rank_id,
-                        "CurrentXP": perfil.player_cur_xp,
+                        "TotalCurrentXP": (perfil.player_cur_xp - 327680000),
+                        "CurrentLvlPerc": ((perfil.player_cur_xp - 327680000) / 5000),
+                        "CurrentLvl": perfil.player_level,
                         "SeasonWins": perfil.rankings[1].wins
                     };
                 }
-                response.status(200).send(objProfiles)
+            response.status(200).send(objProfiles[sid.accountid])
             });
         }
         else
